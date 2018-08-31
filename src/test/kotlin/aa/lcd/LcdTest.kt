@@ -46,4 +46,13 @@ class LcdTest : StringSpec({
             | __|   |
         """.trimMargin()
     }
+    "vertical zoom" {
+        Lcd(verticalZoom = 2).display(94) shouldBe """
+            | _    
+            || || |
+            ||_||_|
+            |  |  |
+            | _|  |
+        """.trimMargin()
+    }
 })

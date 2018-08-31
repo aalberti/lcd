@@ -1,20 +1,12 @@
 package aa.lcd
 
-class Lcd(private val horizontalZoom: Int = 1) {
+class Lcd(private val horizontalZoom: Int = 1, private val verticalZoom: Int = 1) {
     fun display(int: Int): String {
-        return display(int, """
-            |
-            |
-            |
-        """.trimMargin())
+        return display(int, "\n" * verticalZoom*2)
     }
 
     private tailrec fun display(int: Int, acc: String): String = when {
-        int == 0 -> """
-            | _ 
-            || |
-            ||_|
-        """.trimMargin() concat acc
+        int == 0 -> char(0) concat acc
         int / 10 == 0 -> char(int) concat acc
         else -> display(int / 10, char(int % 10) concat acc)
     }
@@ -31,11 +23,24 @@ class Lcd(private val horizontalZoom: Int = 1) {
                 """.trimMargin()
             )
             .horizontalZoom()
+            .verticalZoom()
 
     private fun String.horizontalZoom(): String = lines()
             .map { it.toList() }
             .map { "${it[0]}${it[1] * horizontalZoom}${it[2]}" }
             .joinToString("\n")
+
+    private fun String.verticalZoom(): String = lines()
+            .mapIndexed { index, line ->  when(index) {
+                0 -> line
+                else -> stretch(line)
+            }}
+            .joinToString("\n")
+
+    private fun stretch(line: String): String = Array(verticalZoom) { i ->
+        if (i < verticalZoom - 1) line.map { c: Char -> if (c == '_') ' ' else c }.joinToString("")
+        else line
+    }.joinToString("\n")
 
     private val chars = mapOf(
             0 to """
@@ -91,4 +96,4 @@ class Lcd(private val horizontalZoom: Int = 1) {
     )
 }
 
-private operator fun Char.times(times: Int): String = Array(times) { this }.joinToString("")
+private inline operator fun <reified T> T.times(times: Int): String = Array(times) { this }.joinToString("")
