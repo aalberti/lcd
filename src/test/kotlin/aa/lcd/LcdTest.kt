@@ -55,4 +55,15 @@ class LcdTest : StringSpec({
             | _|  |
         """.trimMargin()
     }
+    "both zooms" {
+        Lcd(horizontalZoom = 3, verticalZoom = 3).display(95) shouldBe """
+            | ___  ___ 
+            ||   ||    
+            ||   ||    
+            ||___||___ 
+            |    |    |
+            |    |    |
+            | ___| ___|
+        """.trimMargin()
+    }
 })
