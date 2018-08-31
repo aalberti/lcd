@@ -1,6 +1,6 @@
 package aa.lcd
 
-class Lcd {
+class Lcd(private val horizontalZoom: Int = 1) {
     fun display(int: Int): String {
         return display(int, """
             |
@@ -24,11 +24,18 @@ class Lcd {
                     .map { "${it.first}${it.second}" }
                     .joinToString("\n")
 
-    private fun char(digit: Int): String = chars[digit] ?: """
-        |   
-        | \/
-        | /\
-    """.trimMargin()
+    private fun char(digit: Int): String = (chars[digit] ?: """
+                    |   
+                    | \/
+                    | /\
+                """.trimMargin()
+            )
+            .horizontalZoom()
+
+    private fun String.horizontalZoom(): String = lines()
+            .map { it.toList() }
+            .map { "${it[0]}${it[1] * horizontalZoom}${it[2]}" }
+            .joinToString("\n")
 
     private val chars = mapOf(
             0 to """
@@ -83,3 +90,5 @@ class Lcd {
         """.trimMargin()
     )
 }
+
+private operator fun Char.times(times: Int): String = Array(times) { this }.joinToString("")
